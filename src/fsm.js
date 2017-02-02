@@ -7,6 +7,8 @@ class FSM {
         if (config) {
             this.config = config;
             this.state = this.config.initial;
+            this.history = [];
+            //this.history = [this.config.initial];
 
         }
         else
@@ -27,6 +29,7 @@ class FSM {
      */
     changeState(state) {
         if (this.config.states[state]) {
+            this.history.push(this.state);
             this.state = state;
         }
         else
@@ -39,7 +42,9 @@ class FSM {
      */
     trigger(event) {
         if (this.config.states[this.state].transitions[event]) {
+            this.history.push(this.state);
             this.state = this.config.states[this.state].transitions[event];
+            //this.history.push(this.state);
         }
         else
             throw new Error;
@@ -81,7 +86,13 @@ class FSM {
      * Returns false if undo is not available.
      * @returns {Boolean}
      */
-    undo() {}
+    undo() {
+        if (this.state == this.config.initial) {
+            return false;
+        }
+        if (this.state = this.history.pop())
+            return true;
+    }
 
     /**
      * Goes redo to state.
